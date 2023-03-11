@@ -1,0 +1,44 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id="connect">连接服务端</button>
+  <button id="send" disabled="true">发送数据</button><br>
+  从服务端接收数据如下: <br>
+  <span id="recv"></span>
+  <script>
+    var connect = document.getElementById('connect')
+    var send = document.getElementById('send')
+    var recv = document.getElementById('recv')
+    let ws = null
+    connect.onclick = function(){
+      ws = new WebSocket('ws://localhost:9998')
+      ws.onopen = () => {
+        console.log('connect~~~')
+        send.disabled = false
+      }
+      ws.onclose = () => {
+        console.log('fail connect~~~')
+        send.disabled = true
+      }
+      ws.onmessage = (msg) => {
+        console.log('message get')
+        console.log(msg)
+        recv.innerHTML = msg.data
+      }
+    }
+    send.onclick = function(){
+      ws.send(JSON.stringify({
+        action: 'themeChange',
+        socketType: 'themeChange',
+        chartName: '',
+        value: 'chalk'
+      }))
+    }
+  </script>
+</body>
+</html>
